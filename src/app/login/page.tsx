@@ -1,37 +1,53 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/config/firebase';
-import { useDispatch } from 'react-redux';
-import { setUser } from '@/store/actions';
-import { useRouter } from 'next/navigation';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../store/actions";
+import { useRouter } from "next/navigation";
+import { Button, Container, TextField, Typography, Box } from "@mui/material";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      dispatch(setUser({ email: userCredential.user.email || '' }));
-      router.push('/');
+      const token = await dispatch<any>(loginUser(email, password));
+      if (token) {
+        router.push("/");
+      }
     } catch (error) {
-      console.error('Login failed', error);
+      console.error("Login failed", error);
     }
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 300, margin: 'auto', mt: 5 }}>
-      <Typography variant="h5">Login</Typography>
-      <TextField label="Email" variant="outlined" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
-      <TextField label="Password" type="password" variant="outlined" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
-      <Button variant="contained" color="primary" onClick={handleLogin}>
-        Login
-      </Button>
-    </Box>
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 10, textAlign: "center" }}>
+        <Typography variant="h4">Login</Typography>
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Email"
+          variant="outlined"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Password"
+          type="password"
+          variant="outlined"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button variant="contained" color="primary" fullWidth onClick={handleLogin} sx={{ mt: 2 }}>
+          Login
+        </Button>
+      </Box>
+    </Container>
   );
 }
