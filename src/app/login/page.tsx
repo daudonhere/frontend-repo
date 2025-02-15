@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { auth } from '@/config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/config/firebase';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/store/actions';
 import { useRouter } from 'next/navigation';
