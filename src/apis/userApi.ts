@@ -9,13 +9,23 @@ export const login = async (email: string, password: string) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const token = await userCredential.user.getIdToken();
 
-    const response = await axios.post(`${API_URL}/auth/verify-token`, { token });
+    const response = await axios.post(
+      `${API_URL}/auth/verify-token`, 
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
     return response.data;
   } catch (error) {
     console.error("Login error:", error);
     throw error;
   }
 };
+
 
 
 export const getUser = async (token: string, userId: string) => {
